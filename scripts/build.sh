@@ -24,7 +24,7 @@ set +x
 PID=$!
 
 echo "* Pinging code-server 10 times until it's accessible".
-curl --silent --retry 10 --retry-connrefused http://localhost:8080/ > /dev/null
+curl --silent --retry 1000 --retry-connrefused http://localhost:8080/ > /dev/null
 
 echo "* Stopping code-server..."
 kill $PID
