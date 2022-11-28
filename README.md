@@ -1,25 +1,16 @@
 # docker-ms-code-server
 
-Docker container with [Microsoft Code-Server](https://code.visualstudio.com/docs/remote/vscode-server) installed.
+Docker container with [Microsoft Code-Server](https://code.visualstudio.com/docs/remote/vscode-server) compiled from sources.
+Basically, this is an OSS version of code-server.
 
 By using this image you are accepting [code-server license](https://aka.ms/vscode-server-license).
-
-Notes:
-
-* License is accepted during build-time and run-time.
-* Telemetry is disabled.
 
 ## Build
 
 Run the following command:
 
 ```sh
-docker build . -t ms-code-server:latest
-```
-
-If you are using some kind of proxy to access remote network, try building with `network=host` mode:
-```sh
-docker build . -t ms-code-server:latest --network=host
+docker-compose build
 ```
 
 ## Usage 
@@ -27,8 +18,9 @@ docker build . -t ms-code-server:latest --network=host
 Run the following command to start the code-server:
 
 ```
-docker run -it --rm -v $(pwd):$(pwd) -p 127.0.0.0:9090:8080 ms-code-server --port 8080
+docker-compose up
 ```
 
-Open `http://127.0.0.1:9090` in your browser.
-
+Open `http://127.0.0.1:8080` in your browser.
+You can specify custom port via `CODE_PORT` env variable.
+You could also tweak `docker-compose.yaml` as you desire.

@@ -1,11 +1,21 @@
-FROM debian:latest
+FROM node:16-bullseye
 
-RUN apt update && apt install -y bash curl git nodejs
+RUN apt-get update && \
+    apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0 libgbm1
 
-COPY ./scripts/build.sh ./build.sh
+RUN git clone --filter=tree:0 --progress https://github.com/microsoft/vscode.git
 
-RUN ./build.sh
+WORKDIR vscode
+RUN yarn --frozen-lockfile
 
-COPY ./scripts/entrypoint.sh ./entrypoint.sh
+# Prevent electron build
+RUN cat build/lib/preLaunch.js \
+    | grep -v "await getElectron();" \
+    > build/lib/preLaunch.slim.js
+
+RUN node ./build/lib/preLaunch.slim.js
+COPY ./scripts/entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
+
