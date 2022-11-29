@@ -1,13 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -e
+set -ex
 
-echo "* Starting code-server"
-
-# Force code-server to autoaccept license by piping
-# yes into it.
-yes | \
-    code-server serve-local \
-      --accept-server-license-terms \
-      --disable-telemetry \
-      $@
+echo "Starting server with args: $@"
+export VSCODE_SKIP_PRELAUNCH=1
+./scripts/code-server.sh $@

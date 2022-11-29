@@ -1,30 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -e
+set -ex
 
-echo "* Downloading code-server installer..."
-curl -L https://aka.ms/install-vscode-server/setup.sh > setup.sh
-echo "* Installing code-server..."
-sh setup.sh
+# Install deps
+yarn --frozen-lockfile
 
-echo ""
-echo "* Preloading code-server binaries..."
-echo "? This will start code-server serve-local and wait for it's start."
-echo "! You might need network access for that."
-echo ""
+# Prevent electron build
+cat build/lib/preLaunch.js \
+    | grep -v "await getElectron();" \
+    > build/lib/preLaunch.slim.js
 
-set -x
-code-server serve-local \
-  --disable-telemetry \
-  --without-connection-token \
-  --port 8080 \
-  --accept-server-license-terms &
-set +x
-
-PID=$!
-
-echo "* Pinging code-server 10 times until it's accessible".
-curl --silent --retry 1000 --retry-connrefused http://localhost:8080/ > /dev/null
-
-echo "* Stopping code-server..."
-kill $PID
+# Compile
+node ./build/lib/preLaunch.slim.js
