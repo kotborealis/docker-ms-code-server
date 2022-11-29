@@ -6,7 +6,7 @@ set -ex
 yarn --frozen-lockfile
 
 # Prevent electron build
-RUN cat build/lib/preLaunch.js \
+cat build/lib/preLaunch.js \
     | grep -v "await getElectron();" \
     > build/lib/preLaunch.slim.js
 
